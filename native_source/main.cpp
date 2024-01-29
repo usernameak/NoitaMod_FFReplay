@@ -82,14 +82,12 @@ struct FfmpegEncoder {
     HANDLE openPipe(const wchar_t *output_path, int width, int height) {
         if (stdinPipeWrite != INVALID_HANDLE_VALUE) return stdinPipeWrite;
 
-        const wchar_t *ffmpeg_path = L"C:\\msys64\\mingw64\\bin\\ffmpeg.exe";
-
-        wchar_t cmdline[512];
-        swprintf(cmdline, 512,
+        wchar_t cmdline[1024];
+        swprintf(cmdline, 1024,
             L"\"%s\" -r 30 -f rawvideo -pix_fmt rgba -s %dx%d -i - "
             "-vcodec libx264 -crf 10 -pix_fmt yuv420p -an -vf vflip -y "
             "-preset superfast -tune animation \"%s.mp4\"",
-            ffmpeg_path, width, height, output_path);
+            g_ffmpegPath.c_str(), width, height, output_path);
 
         SECURITY_ATTRIBUTES sa;
         sa.nLength              = sizeof(SECURITY_ATTRIBUTES);
@@ -111,7 +109,7 @@ struct FfmpegEncoder {
         PROCESS_INFORMATION pi{};
 
         CreateProcessW(
-            ffmpeg_path,
+            g_ffmpegPath.c_str(),
             cmdline,
             nullptr,
             nullptr,
