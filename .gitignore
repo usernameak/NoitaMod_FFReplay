@@ -1,0 +1,6 @@
+cmake-build-*
+*.dll
+*.pdb
+*.ilk
+.idea
+
